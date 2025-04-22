@@ -40,13 +40,13 @@ public class Juego {
                     if (palabra.isEmpty()) continue;
 
                     if (palabrasUsadasEnRonda.contains(palabra)) {
-                        System.out.println(" Esa palabra ya se usó. Pierdes 5 puntos.");
+                        System.out.println(" Esa palabra ya se uso. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                         continue;
                     }
 
                     if (!diccionario.esPalabraValida(palabra)) {
-                        System.out.println(" Palabra inválida. Pierdes 5 puntos.");
+                        System.out.println(" Palabra invalida. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                     } else if (!letrasValidas(palabra, letrasDeRonda)) {
                         System.out.println(" No se pueden formar con las letras dadas. Pierdes 5 puntos.");
@@ -57,7 +57,7 @@ public class Juego {
                         jugador.usarPalabra(palabra);
                         palabrasUsadasEnRonda.add(palabra);
 
-                        System.out.println(" Palabra válida. + " + puntos + " puntos.");
+                        System.out.println(" Palabra valida. + " + puntos + " puntos.");
                     }
 
                     System.out.println("Puntaje actual: " + jugador.getPuntaje());
