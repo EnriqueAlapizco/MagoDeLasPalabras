@@ -5,6 +5,7 @@
 package com.mycompany.magodelaspalabras;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Juego {
     private final List<Jugador> jugadores;
