@@ -23,7 +23,7 @@ public class Juego {
         Scanner scanner = new Scanner(System.in);
 
         for (int ronda = 1; ronda <= 3; ronda++) {
-            System.out.println("\n🔮 --- RONDA " + ronda + " ---");
+            System.out.println("\n --- RONDA " + ronda + " ---");
 
             HashSet<String> palabrasUsadasEnRonda = new HashSet<>();
             HashSet<Character> letrasDeRonda = generarLetrasDeRonda();
@@ -40,16 +40,16 @@ public class Juego {
                     if (palabra.isEmpty()) continue;
 
                     if (palabrasUsadasEnRonda.contains(palabra)) {
-                        System.out.println("⚠️ Esa palabra ya se usó. Pierdes 5 puntos.");
+                        System.out.println(" Esa palabra ya se usó. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                         continue;
                     }
 
                     if (!diccionario.esPalabraValida(palabra)) {
-                        System.out.println("❌ Palabra inválida. Pierdes 5 puntos.");
+                        System.out.println(" Palabra inválida. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                     } else if (!letrasValidas(palabra, letrasDeRonda)) {
-                        System.out.println("❌ No se pueden formar con las letras dadas. Pierdes 5 puntos.");
+                        System.out.println(" No se pueden formar con las letras dadas. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                     } else {
                         int puntos = diccionario.obtenerPuntaje(palabra);
@@ -57,7 +57,7 @@ public class Juego {
                         jugador.usarPalabra(palabra);
                         palabrasUsadasEnRonda.add(palabra);
 
-                        System.out.println("✅ Palabra válida. + " + puntos + " puntos.");
+                        System.out.println(" Palabra válida. + " + puntos + " puntos.");
                     }
 
                     System.out.println("Puntaje actual: " + jugador.getPuntaje());
@@ -74,7 +74,7 @@ public class Juego {
     }
 
     public void mostrarResultadosFinales() {
-        System.out.println("\n🏁 RESULTADOS FINALES:");
+        System.out.println("\nRESULTADOS FINALES:");
         jugadores.forEach(j -> 
             System.out.println(j.getNombre() + " -> " + j.getPuntaje() + " puntos")
         );
@@ -84,7 +84,7 @@ public class Juego {
                 .orElse(null);
 
         if (ganador != null) {
-            System.out.println("\n🎉 ¡Ganador: " + ganador.getNombre() + " con " + ganador.getPuntaje() + " puntos!");
+            System.out.println("\n¡Ganador: " + ganador.getNombre() + " con " + ganador.getPuntaje() + " puntos!");
         }
     }
 
