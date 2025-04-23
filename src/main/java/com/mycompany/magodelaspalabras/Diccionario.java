@@ -15,7 +15,7 @@ public class Diccionario {
 
     public Diccionario() {
         palabrasValidas = new HashMap<>();
-        cargarDesdeArchivo("Diccionario.txt"); 
+        cargarDesdeArchivo("C:\\Users\\enriq\\Documents\\NetBeansProjects\\MagoDeLasPalabras\\src\\main\\java\\com\\mycompany\\magodelaspalabras\\Diccionario.txt"); 
     }
 
     private void cargarDesdeArchivo(String archivo) {
