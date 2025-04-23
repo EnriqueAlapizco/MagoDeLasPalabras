@@ -8,11 +8,11 @@ import java.util.*;
 public class MagoDeLasPalabras {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("¡Bienvenido al Mago de las Palabras!");
+        System.out.println("Bienvenido al Mago de las Palabras");
 
         int numJugadores;
         do {
-            System.out.print("Ingrese el número de jugadores (2-4): ");
+            System.out.print("Ingrese el numero de jugadores (2-4): ");
             numJugadores = scanner.nextInt();
             scanner.nextLine(); // limpiar el buffer
         } while (numJugadores < 2 || numJugadores > 4);
@@ -29,13 +29,15 @@ public class MagoDeLasPalabras {
             System.out.println("Seleccione modalidad de juego:");
             System.out.println("1. Regular");
             System.out.println("2. Experto");
-            System.out.print("Opción: ");
+            System.out.print("Opcion: ");
             modo = scanner.nextInt();
             scanner.nextLine();
         } while (modo != 1 && modo != 2);
 
         ModoJuego modalidad = (modo == 1) ? ModoJuego.REGULAR : ModoJuego.EXPERTO;
-
+        
+        Diccionario diccionario = new Diccionario();
+        
         Juego juego = new Juego(jugadores, modalidad);
         juego.jugar();
         juego.mostrarResultadosFinales();

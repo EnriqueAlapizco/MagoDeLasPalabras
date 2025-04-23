@@ -26,7 +26,8 @@ public class Juego {
             System.out.println("\n --- RONDA " + ronda + " ---");
 
             HashSet<String> palabrasUsadasEnRonda = new HashSet<>();
-            HashSet<Character> letrasDeRonda = generarLetrasDeRonda();
+            //HashSet<Character> letrasDeRonda = generarLetrasDeRonda();
+            Set<Character> letrasDeRonda = generarLetrasRonda();
 
             System.out.println("Letras disponibles: " + letrasDeRonda);
 
@@ -88,19 +89,51 @@ public class Juego {
         }
     }
 
-    private HashSet<Character> generarLetrasDeRonda() {
-        int cantidadLetras = (modoJuego == ModoJuego.REGULAR) ? 10 : 12;
-        String abecedario = "abcdefghijklmnopqrstuvwxyz";
+//    private HashSet<Character> generarLetrasDeRonda() {
+//        int cantidadLetras = (modoJuego == ModoJuego.REGULAR) ? 10 : 12;
+//        String abecedario = "abcdefghijklmnopqrstuvwxyz";
+//
+//        HashSet<Character> letras = new HashSet<>();
+//        while (letras.size() < cantidadLetras) {
+//            char letra = abecedario.charAt(random.nextInt(abecedario.length()));
+//            letras.add(letra);
+//        }
+//
+//        return letras;
+//    }
 
-        HashSet<Character> letras = new HashSet<>();
-        while (letras.size() < cantidadLetras) {
-            char letra = abecedario.charAt(random.nextInt(abecedario.length()));
-            letras.add(letra);
-        }
+    
+    
+    private Set<Character> generarLetrasRonda() {
+    Set<Character> letras = new HashSet<>();
+    Random random = new Random();
 
-        return letras;
+    String vocales = "aeiou";
+    String consonantes = "bcdfghjklmnpqrstvwxyz";
+    boolean modoExperto = false;
+
+    int cantidadLetras = modoExperto ? 12 : 10;
+
+    // 1. Agregar mínimo 2 vocales obligatorias
+    while (letras.size() < 2) {
+        char vocal = vocales.charAt(random.nextInt(vocales.length()));
+        letras.add(vocal);
     }
 
+    // 2. Agregar el resto de letras (pueden ser vocales o consonantes)
+    while (letras.size() < cantidadLetras) {
+        char letra;
+        if (random.nextBoolean()) {
+            letra = vocales.charAt(random.nextInt(vocales.length()));
+        } else {
+            letra = consonantes.charAt(random.nextInt(consonantes.length()));
+        }
+        letras.add(letra);
+    }
+
+    return letras;
+}
+    
     private boolean letrasValidas(String palabra, Set<Character> letrasDisponibles) {
         Map<Character, Long> letrasPalabra = palabra.chars()
                 .mapToObj(c -> (char) c)

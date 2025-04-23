@@ -4,21 +4,47 @@
  */
 package com.mycompany.magodelaspalabras;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Diccionario {
-    private final Map<String, Integer> palabrasValidas;
+    private Map<String, Integer> palabrasValidas;
 
     public Diccionario() {
         palabrasValidas = new HashMap<>();
+        cargarDesdeArchivo("Diccionario.txt"); 
+    }
 
-        // Palabras de ejemplo
-        String[] lista = {"casa", "sapo", "luz", "raton", "botella", "nube", "flor", "sol", "gato", "pato"};
-
-        for (String palabra : lista) {
-            palabrasValidas.put(palabra, calcularPuntaje(palabra));
+    private void cargarDesdeArchivo(String archivo) {
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                
+                String[] palabras = linea.split(",\\s*");
+                for (String palabra : palabras) {
+                    palabra = palabra.toLowerCase();
+                    int puntos = calcularPuntos(palabra);
+                    palabrasValidas.put(palabra, puntos);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al leer el archivo del diccionario: " + e.getMessage());
         }
+    }
+
+    private int calcularPuntos(String palabra) {
+        int puntos = 0;
+        for (char c : palabra.toCharArray()) {
+            if ("aeiou".indexOf(c) != -1) {
+                puntos += 5;
+            } else if (Character.isLetter(c)) {
+                puntos += 3;
+            }
+        }
+        return puntos;
     }
 
     public boolean esPalabraValida(String palabra) {
@@ -29,15 +55,8 @@ public class Diccionario {
         return palabrasValidas.getOrDefault(palabra.toLowerCase(), 0);
     }
 
-    private int calcularPuntaje(String palabra) {
-        int puntos = 0;
-        for (char c : palabra.toLowerCase().toCharArray()) {
-            if ("aeiou".indexOf(c) >= 0) {
-                puntos += 5; // Para vocales
-            } else if (Character.isLetter(c)) {
-                puntos += 3; // Para consonantes
-            }
-        }
-        return puntos;
+    public Map<String, Integer> obtenerDiccionario() {
+        return palabrasValidas;
     }
 }
+
