@@ -89,21 +89,6 @@ public class Juego {
         }
     }
 
-//    private HashSet<Character> generarLetrasDeRonda() {
-//        int cantidadLetras = (modoJuego == ModoJuego.REGULAR) ? 10 : 12;
-//        String abecedario = "abcdefghijklmnopqrstuvwxyz";
-//
-//        HashSet<Character> letras = new HashSet<>();
-//        while (letras.size() < cantidadLetras) {
-//            char letra = abecedario.charAt(random.nextInt(abecedario.length()));
-//            letras.add(letra);
-//        }
-//
-//        return letras;
-//    }
-
-    
-    
     private Set<Character> generarLetrasRonda() {
     Set<Character> letras = new HashSet<>();
     Random random = new Random();
@@ -134,17 +119,34 @@ public class Juego {
     return letras;
 }
     
+//    private boolean letrasValidas(String palabra, Set<Character> letrasDisponibles) {
+//        Map<Character, Long> letrasPalabra = palabra.chars()
+//                .mapToObj(c -> (char) c)
+//                .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
+//
+//        for (Map.Entry<Character, Long> entry : letrasPalabra.entrySet()) {
+//            long enRonda = letrasDisponibles.stream()
+//                    .filter(c -> c == entry.getKey())
+//                    .count();
+//            if (entry.getValue() > enRonda) return false;
+//        }
+//        return true;
+//    }
+    
+    
     private boolean letrasValidas(String palabra, Set<Character> letrasDisponibles) {
-        Map<Character, Long> letrasPalabra = palabra.chars()
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
+    //guardar caracteres en un set
+    Set<Character> caracteresPalabra = palabra.chars()
+            .mapToObj(c -> (char) c)
+            .collect(Collectors.toSet());
 
-        for (Map.Entry<Character, Long> entry : letrasPalabra.entrySet()) {
-            long enRonda = letrasDisponibles.stream()
-                    .filter(c -> c == entry.getKey())
-                    .count();
-            if (entry.getValue() > enRonda) return false;
+    //verificar letras
+    for (Character letra : caracteresPalabra) {
+        if (!letrasDisponibles.contains(letra)) {
+            return false;
         }
-        return true;
     }
+    
+    return true;
+}
 }
