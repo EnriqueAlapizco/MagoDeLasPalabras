@@ -37,11 +37,12 @@ public class MagoDeLasPalabras {
         ModoJuego modalidad = (modo == 1) ? ModoJuego.REGULAR : ModoJuego.EXPERTO;
         
         Diccionario diccionario = new Diccionario();
-        
-        Juego juego = new Juego(jugadores, modalidad);
-        juego.jugar();
-        juego.mostrarResultadosFinales();
-
+        if (modo == 1) {
+            new Juego(jugadores);
+        }
+        else {
+            new JuegoExperto(jugadores);
+        }
         scanner.close();
     }
 }

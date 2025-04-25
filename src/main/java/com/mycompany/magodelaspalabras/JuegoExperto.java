@@ -7,12 +7,12 @@ package com.mycompany.magodelaspalabras;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Juego {
+public class JuegoExperto {
     private final List<Jugador> jugadores;
     private final Diccionario diccionario;
     private final Random random = new Random();
 
-    public Juego(List<Jugador> jugadores) {
+    public JuegoExperto(List<Jugador> jugadores) {
         this.jugadores = jugadores;
         this.diccionario = new Diccionario();
         jugar();
@@ -76,8 +76,8 @@ public class Juego {
 
     public void mostrarResultadosFinales() {
         System.out.println("\nRESULTADOS FINALES:");
-        jugadores.forEach(j -> 
-            System.out.println(j.getNombre() + " -> " + j.getPuntaje() + " puntos")
+        jugadores.forEach(j ->
+                System.out.println(j.getNombre() + " -> " + j.getPuntaje() + " puntos")
         );
 
         Jugador ganador = jugadores.stream()
@@ -90,63 +90,43 @@ public class Juego {
     }
 
     private Set<Character> generarLetrasRonda() {
-    Set<Character> letras = new HashSet<>();
-    Random random = new Random();
+        Set<Character> letras = new HashSet<>();
+        Random random = new Random();
 
-    String vocales = "aeiou";
-    String consonantes = "bcdfghjklmnpqrstvy";
-    boolean modoExperto = false;
+        String vocales = "aeiou";
+        String consonantes = "bcdfghjklmnpqrstvwxyz";
 
-    int cantidadLetras = modoExperto ? 12 : 10;
+        int cantidadLetras = 10;
 
-    // 1. Agregar mínimo 2 vocales obligatorias
-    while (letras.size() < 2) {
-        char vocal = vocales.charAt(random.nextInt(vocales.length()));
-        letras.add(vocal);
-    }
+        // 1. Agregar solamente 2 vocales obligatorias
+        while (letras.size() < 2) {
+            char vocal = vocales.charAt(random.nextInt(vocales.length()));
+            letras.add(vocal);
+        }
 
-    // 2. Agregar el resto de letras (pueden ser vocales o consonantes)
-    while (letras.size() < cantidadLetras) {
-        char letra;
-        if (random.nextBoolean()) {
-            letra = vocales.charAt(random.nextInt(vocales.length()));
-        } else {
+        // 2. Agregar el resto de letras (Solamente consonantes)
+        while (letras.size() < cantidadLetras) {
+            char letra;
             letra = consonantes.charAt(random.nextInt(consonantes.length()));
+            letras.add(letra);
         }
-        letras.add(letra);
+
+        return letras;
     }
 
-    return letras;
-}
-    
-//    private boolean letrasValidas(String palabra, Set<Character> letrasDisponibles) {
-//        Map<Character, Long> letrasPalabra = palabra.chars()
-//                .mapToObj(c -> (char) c)
-//                .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
-//
-//        for (Map.Entry<Character, Long> entry : letrasPalabra.entrySet()) {
-//            long enRonda = letrasDisponibles.stream()
-//                    .filter(c -> c == entry.getKey())
-//                    .count();
-//            if (entry.getValue() > enRonda) return false;
-//        }
-//        return true;
-//    }
-    
-    
     private boolean letrasValidas(String palabra, Set<Character> letrasDisponibles) {
-    //guardar caracteres en un set
-    Set<Character> caracteresPalabra = palabra.chars()
-            .mapToObj(c -> (char) c)
-            .collect(Collectors.toSet());
+        //guardar caracteres en un set
+        Set<Character> caracteresPalabra = palabra.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toSet());
 
-    //verificar letras
-    for (Character letra : caracteresPalabra) {
-        if (!letrasDisponibles.contains(letra)) {
-            return false;
+        //verificar letras
+        for (Character letra : caracteresPalabra) {
+            if (!letrasDisponibles.contains(letra)) {
+                return false;
+            }
         }
+
+        return true;
     }
-    
-    return true;
-}
 }
