@@ -65,13 +65,13 @@ public class Diccionario {
         nuevaPalabra = nuevaPalabra.toLowerCase().trim();
 
         if (nuevaPalabra.isEmpty() || palabrasValidas.containsKey(nuevaPalabra)) {
-            return false; // ya existe o está vacía
+            return false; 
         }
 
         int puntos = calcularPuntos(nuevaPalabra);
         palabrasValidas.put(nuevaPalabra, puntos);
 
-        // Agregar la palabra al archivo, separada por coma y espacio
+        
         try (FileWriter fw = new FileWriter("C:\\Users\\enriq\\Documents\\NetBeansProjects\\MagoDeLasPalabras\\src\\main\\java\\com\\mycompany\\magodelaspalabras\\Diccionario.txt", true)) {
             fw.write(", " + nuevaPalabra);
         } catch (IOException e) {

@@ -21,44 +21,48 @@ public class JuegoExperto {
 
     public void jugar() {
         Scanner scanner = new Scanner(System.in);
-
         for (int ronda = 1; ronda <= 3; ronda++) {
             System.out.println("\n --- RONDA " + ronda + " ---");
-
             HashSet<String> palabrasUsadasEnRonda = new HashSet<>();
-            //HashSet<Character> letrasDeRonda = generarLetrasDeRonda();
             Set<Character> letrasDeRonda = generarLetrasRonda();
-
-            System.out.println("Letras disponibles: " + letrasDeRonda);
-
+            //System.out.println("Letras disponibles: " + letrasDeRonda);
             boolean seguir = true;
             while (seguir) {
                 for (Jugador jugador : jugadores) {
+                    System.out.println("Letras disponibles: " + letrasDeRonda);
                     System.out.println("\nTurno de " + jugador.getNombre());
                     System.out.print("Escribe una palabra (ENTER para pasar): ");
                     String palabra = scanner.nextLine().toLowerCase().trim();
-
                     if (palabra.isEmpty()) continue;
 
                     if (palabrasUsadasEnRonda.contains(palabra)) {
-                        System.out.println(" Esa palabra ya se uso. Pierdes 5 puntos.");
+                        System.out.println(" Esa palabra ya se usó. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                         continue;
                     }
 
                     if (!diccionario.esPalabraValida(palabra)) {
-                        System.out.println(" Palabra invalida. Pierdes 5 puntos.");
-                        jugador.agregarPuntos(-5);
-                    } else if (!letrasValidas(palabra, letrasDeRonda)) {
-                        System.out.println(" No se pueden formar con las letras dadas. Pierdes 5 puntos.");
+                        System.out.print(" Palabra inválida. ¿Deseas registrarla? (s/n): ");
+                        String respuesta = scanner.nextLine().trim().toLowerCase();
+                        if (respuesta.equals("s")) {
+                            diccionario.agregarPalabraManual(palabra);
+                            System.out.println(" Palabra registrada exitosamente.");
+                        } else {
+                            System.out.println(" Palabra rechazada. Pierdes 5 puntos.");
+                            jugador.agregarPuntos(-5);
+                            continue;
+                        }
+                    }
+
+                    if (!letrasValidas(palabra, letrasDeRonda)) {
+                        System.out.println(" No se puede formar con las letras dadas. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                     } else {
                         int puntos = diccionario.obtenerPuntaje(palabra);
                         jugador.agregarPuntos(puntos);
                         jugador.usarPalabra(palabra);
                         palabrasUsadasEnRonda.add(palabra);
-
-                        System.out.println(" Palabra valida. + " + puntos + " puntos.");
+                        System.out.println(" Palabra válida. + " + puntos + " puntos.");
                     }
 
                     System.out.println("Puntaje actual: " + jugador.getPuntaje());
@@ -69,7 +73,6 @@ public class JuegoExperto {
                 seguir = respuesta.equalsIgnoreCase("s");
             }
 
-            // Limpiar palabras usadas por jugador
             jugadores.forEach(Jugador::reiniciarPalabras);
         }
     }
