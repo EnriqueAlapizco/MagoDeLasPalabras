@@ -4,6 +4,7 @@
  */
 package com.mycompany.magodelaspalabras;
 
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -21,44 +22,48 @@ public class Juego {
 
     public void jugar() {
         Scanner scanner = new Scanner(System.in);
-
         for (int ronda = 1; ronda <= 3; ronda++) {
             System.out.println("\n --- RONDA " + ronda + " ---");
-
             HashSet<String> palabrasUsadasEnRonda = new HashSet<>();
-            //HashSet<Character> letrasDeRonda = generarLetrasDeRonda();
             Set<Character> letrasDeRonda = generarLetrasRonda();
-
-            System.out.println("Letras disponibles: " + letrasDeRonda);
-
+            //System.out.println("Letras disponibles: " + letrasDeRonda);
             boolean seguir = true;
             while (seguir) {
                 for (Jugador jugador : jugadores) {
+                    System.out.println("Letras disponibles: " + letrasDeRonda);
                     System.out.println("\nTurno de " + jugador.getNombre());
                     System.out.print("Escribe una palabra (ENTER para pasar): ");
                     String palabra = scanner.nextLine().toLowerCase().trim();
-
                     if (palabra.isEmpty()) continue;
 
                     if (palabrasUsadasEnRonda.contains(palabra)) {
-                        System.out.println(" Esa palabra ya se uso. Pierdes 5 puntos.");
+                        System.out.println(" Esa palabra ya se usó. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                         continue;
                     }
 
                     if (!diccionario.esPalabraValida(palabra)) {
-                        System.out.println(" Palabra invalida. Pierdes 5 puntos.");
-                        jugador.agregarPuntos(-5);
-                    } else if (!letrasValidas(palabra, letrasDeRonda)) {
-                        System.out.println(" No se pueden formar con las letras dadas. Pierdes 5 puntos.");
+                        System.out.print(" Palabra inválida. ¿Deseas registrarla? (s/n): ");
+                        String respuesta = scanner.nextLine().trim().toLowerCase();
+                        if (respuesta.equals("s")) {
+                            diccionario.agregarPalabraManual(palabra);
+                            System.out.println(" Palabra registrada exitosamente.");
+                        } else {
+                            System.out.println(" Palabra rechazada. Pierdes 5 puntos.");
+                            jugador.agregarPuntos(-5);
+                            continue;
+                        }
+                    }
+
+                    if (!letrasValidas(palabra, letrasDeRonda)) {
+                        System.out.println(" No se puede formar con las letras dadas. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                     } else {
                         int puntos = diccionario.obtenerPuntaje(palabra);
                         jugador.agregarPuntos(puntos);
                         jugador.usarPalabra(palabra);
                         palabrasUsadasEnRonda.add(palabra);
-
-                        System.out.println(" Palabra valida. + " + puntos + " puntos.");
+                        System.out.println(" Palabra válida. + " + puntos + " puntos.");
                     }
 
                     System.out.println("Puntaje actual: " + jugador.getPuntaje());
@@ -69,84 +74,54 @@ public class Juego {
                 seguir = respuesta.equalsIgnoreCase("s");
             }
 
-            // Limpiar palabras usadas por jugador
             jugadores.forEach(Jugador::reiniciarPalabras);
         }
     }
 
     public void mostrarResultadosFinales() {
         System.out.println("\nRESULTADOS FINALES:");
-        jugadores.forEach(j -> 
-            System.out.println(j.getNombre() + " -> " + j.getPuntaje() + " puntos")
+        jugadores.forEach(j ->
+                System.out.println(j.getNombre() + " -> " + j.getPuntaje() + " puntos")
         );
-
         Jugador ganador = jugadores.stream()
                 .max(Comparator.comparingInt(Jugador::getPuntaje))
                 .orElse(null);
-
         if (ganador != null) {
             System.out.println("\n¡Ganador: " + ganador.getNombre() + " con " + ganador.getPuntaje() + " puntos!");
         }
     }
 
     private Set<Character> generarLetrasRonda() {
-    Set<Character> letras = new HashSet<>();
-    Random random = new Random();
+        Set<Character> letras = new HashSet<>();
+        String vocales = "aeiou";
+        String consonantes = "bcdfghjklmnpqrstvy";
+        boolean modoExperto = false;
+        int cantidadLetras = modoExperto ? 12 : 10;
 
-    String vocales = "aeiou";
-    String consonantes = "bcdfghjklmnpqrstvy";
-    boolean modoExperto = false;
-
-    int cantidadLetras = modoExperto ? 12 : 10;
-
-    // 1. Agregar mínimo 2 vocales obligatorias
-    while (letras.size() < 2) {
-        char vocal = vocales.charAt(random.nextInt(vocales.length()));
-        letras.add(vocal);
-    }
-
-    // 2. Agregar el resto de letras (pueden ser vocales o consonantes)
-    while (letras.size() < cantidadLetras) {
-        char letra;
-        if (random.nextBoolean()) {
-            letra = vocales.charAt(random.nextInt(vocales.length()));
-        } else {
-            letra = consonantes.charAt(random.nextInt(consonantes.length()));
+        while (letras.size() < 2) {
+            char vocal = vocales.charAt(random.nextInt(vocales.length()));
+            letras.add(vocal);
         }
-        letras.add(letra);
+
+        while (letras.size() < cantidadLetras) {
+            char letra = random.nextBoolean()
+                    ? vocales.charAt(random.nextInt(vocales.length()))
+                    : consonantes.charAt(random.nextInt(consonantes.length()));
+            letras.add(letra);
+        }
+
+        return letras;
     }
 
-    return letras;
-}
-    
-//    private boolean letrasValidas(String palabra, Set<Character> letrasDisponibles) {
-//        Map<Character, Long> letrasPalabra = palabra.chars()
-//                .mapToObj(c -> (char) c)
-//                .collect(Collectors.groupingBy(c -> c, Collectors.counting()));
-//
-//        for (Map.Entry<Character, Long> entry : letrasPalabra.entrySet()) {
-//            long enRonda = letrasDisponibles.stream()
-//                    .filter(c -> c == entry.getKey())
-//                    .count();
-//            if (entry.getValue() > enRonda) return false;
-//        }
-//        return true;
-//    }
-    
-    
     private boolean letrasValidas(String palabra, Set<Character> letrasDisponibles) {
-    //guardar caracteres en un set
-    Set<Character> caracteresPalabra = palabra.chars()
-            .mapToObj(c -> (char) c)
-            .collect(Collectors.toSet());
-
-    //verificar letras
-    for (Character letra : caracteresPalabra) {
-        if (!letrasDisponibles.contains(letra)) {
-            return false;
+        Set<Character> caracteresPalabra = palabra.chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toSet());
+        for (Character letra : caracteresPalabra) {
+            if (!letrasDisponibles.contains(letra)) {
+                return false;
+            }
         }
+        return true;
     }
-    
-    return true;
-}
 }
