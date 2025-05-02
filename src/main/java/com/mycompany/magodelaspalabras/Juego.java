@@ -5,6 +5,7 @@
 package com.mycompany.magodelaspalabras;
 
 
+import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,51 +28,52 @@ public class Juego {
             HashSet<String> palabrasUsadasEnRonda = new HashSet<>();
             Set<Character> letrasDeRonda = generarLetrasRonda();
             //System.out.println("Letras disponibles: " + letrasDeRonda);
-            boolean seguir = true;
-            while (seguir) {
+            int seguir = 0;
+            while (seguir == 0) {
                 for (Jugador jugador : jugadores) {
-                    System.out.println("Letras disponibles: " + letrasDeRonda);
-                    System.out.println("\nTurno de " + jugador.getNombre());
-                    System.out.print("Escribe una palabra (ENTER para pasar): ");
-                    String palabra = scanner.nextLine().toLowerCase().trim();
+                    JOptionPane.showMessageDialog(null, "Ingrese una palabra", "Jugador: " + jugador.getNombre(), JOptionPane.INFORMATION_MESSAGE);
+                    String palabra = JOptionPane.showInputDialog("Letras disponibles: " + letrasDeRonda);
                     if (palabra.isEmpty()) continue;
 
                     if (palabrasUsadasEnRonda.contains(palabra)) {
-                        System.out.println(" Esa palabra ya se usó. Pierdes 5 puntos.");
+                        JOptionPane.showMessageDialog(null, "Esa palabra ya se usó. Pierdes 5 puntos.", "Jugador: " + jugador.getNombre(), JOptionPane.INFORMATION_MESSAGE);
+                        //System.out.println(" Esa palabra ya se usó. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                         continue;
                     }
 
                     if (!diccionario.esPalabraValida(palabra)) {
-                        System.out.print(" Palabra inválida. ¿Deseas registrarla? (s/n): ");
-                        String respuesta = scanner.nextLine().trim().toLowerCase();
-                        if (respuesta.equals("s")) {
+                        int respuesta = JOptionPane.showConfirmDialog(null, "Palabra inválida. ¿Deseas registrarla?", "-", JOptionPane.YES_NO_OPTION);
+                        //String respuesta = scanner.nextLine().trim().toLowerCase();
+                        if (respuesta==0) {
                             diccionario.agregarPalabraManual(palabra);
-                            System.out.println(" Palabra registrada exitosamente.");
+                            JOptionPane.showMessageDialog(null, "Palabra registrada exitosamente.", "Jugador: " + jugador.getNombre(), JOptionPane.INFORMATION_MESSAGE);
+                            //System.out.println(" Palabra registrada exitosamente.");
                         } else {
-                            System.out.println(" Palabra rechazada. Pierdes 5 puntos.");
+                            JOptionPane.showMessageDialog(null, "Palabra rechazada. Pierdes 5 puntos.", "Jugador: " + jugador.getNombre(), JOptionPane.INFORMATION_MESSAGE);
+                            //System.out.println(" Palabra rechazada. Pierdes 5 puntos.");
                             jugador.agregarPuntos(-5);
                             continue;
                         }
                     }
 
                     if (!letrasValidas(palabra, letrasDeRonda)) {
-                        System.out.println(" No se puede formar con las letras dadas. Pierdes 5 puntos.");
+                        JOptionPane.showMessageDialog(null, "No se puede formar con las letras dadas. Pierdes 5 puntos.", "Jugador: " + jugador.getNombre(), JOptionPane.INFORMATION_MESSAGE);
+                        //System.out.println(" No se puede formar con las letras dadas. Pierdes 5 puntos.");
                         jugador.agregarPuntos(-5);
                     } else {
                         int puntos = diccionario.obtenerPuntaje(palabra);
                         jugador.agregarPuntos(puntos);
                         jugador.usarPalabra(palabra);
                         palabrasUsadasEnRonda.add(palabra);
-                        System.out.println(" Palabra válida. + " + puntos + " puntos.");
+                        JOptionPane.showMessageDialog(null, "Palabra válida. + " + puntos + " puntos.", "Jugador: " + jugador.getNombre(), JOptionPane.INFORMATION_MESSAGE);
+                        //System.out.println(" Palabra válida. + " + puntos + " puntos.");
                     }
-
-                    System.out.println("Puntaje actual: " + jugador.getPuntaje());
+                    JOptionPane.showMessageDialog(null, "Puntaje actual: " + jugador.getPuntaje() , "Jugador: " + jugador.getNombre(), JOptionPane.INFORMATION_MESSAGE);
+                    //System.out.println("Puntaje actual: " + jugador.getPuntaje());
                 }
 
-                System.out.print("\n¿Desean continuar esta ronda? (s/n): ");
-                String respuesta = scanner.nextLine();
-                seguir = respuesta.equalsIgnoreCase("s");
+                seguir = JOptionPane.showConfirmDialog(null, "¿Desean continuar esta ronda?", "-", JOptionPane.YES_NO_OPTION);
             }
 
             jugadores.forEach(Jugador::reiniciarPalabras);
@@ -79,14 +81,15 @@ public class Juego {
     }
 
     public void mostrarResultadosFinales() {
-        System.out.println("\nRESULTADOS FINALES:");
+        //System.out.println("\nRESULTADOS FINALES:");
         jugadores.forEach(j ->
-                System.out.println(j.getNombre() + " -> " + j.getPuntaje() + " puntos")
+                JOptionPane.showMessageDialog(null, "Puntaje de " + j.getNombre() + " : " + j.getPuntaje() , "RESULTADOS FINALES:", JOptionPane.INFORMATION_MESSAGE)
         );
         Jugador ganador = jugadores.stream()
                 .max(Comparator.comparingInt(Jugador::getPuntaje))
                 .orElse(null);
         if (ganador != null) {
+            JOptionPane.showMessageDialog(null, "\n¡Ganador: " + ganador.getNombre() + " con " + ganador.getPuntaje() + " puntos!", "RESULTADOS FINALES:", JOptionPane.INFORMATION_MESSAGE);
             System.out.println("\n¡Ganador: " + ganador.getNombre() + " con " + ganador.getPuntaje() + " puntos!");
         }
     }
